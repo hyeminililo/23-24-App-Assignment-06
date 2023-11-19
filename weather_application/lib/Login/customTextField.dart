@@ -14,7 +14,7 @@ class CustomTextField extends StatelessWidget {
     this.hintText,
     this.errorText,
     this.obscureText = false,
-    this.autoFocus = false,
+    this.autoFocus = true,
     required this.onChanged,
     this.validator,
     this.controller,
@@ -35,6 +35,7 @@ class CustomTextField extends StatelessWidget {
         // 값이 바뀔 때마다 실행됨
         onChanged: onChanged,
         validator: validator,
+        obscureText: obscureText,
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(20),
             errorText: errorText,
