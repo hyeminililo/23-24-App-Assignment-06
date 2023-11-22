@@ -34,6 +34,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
+                  print('$snapshot.statusCode');
                   return const Text('데이터를 가져오는 중 오류가 발생했습니다.');
                 } else {
                   WeatherModel weather = weatherLocation.weather!;

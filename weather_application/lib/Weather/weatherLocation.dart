@@ -6,14 +6,31 @@ import 'package:geocoding/geocoding.dart';
 import 'weatherModel.dart';
 
 class WeatherLocation {
+  static const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
   double lat = 0.0;
   double long = 0.0;
   String url = '';
   // API키 발급
-  String API_KEY = '8f56a6e1df81c819811b13ada11ef9d3';
+  final String API_KEY = '8f56a6e1df81c819811b13ada11ef9d3';
   String location = '';
   Function? onUpdate;
   WeatherModel? weather;
+// 새로 만듦
+  Future<String> getMyCurrentLocation1() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.low);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    String? city = placemarks[0].locality;
+    print(city);
+    return city ?? "";
+  }
 
   // 현재 위치를 얻어옴
   void getMyCurrentLocation() async {
@@ -23,9 +40,9 @@ class WeatherLocation {
       // Geolocator를 통해 받은 위도,경도값 저장
       lat = position.latitude;
       long = position.longitude;
-      // 변수 url에 날씨를 받아올 url 저장
+      // 변수 url에 날씨를 받아올 url 저장 //https로 지정
       url =
-          'http://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$long&appid=$API_KEY&units=metric';
+          'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$long&appid=$API_KEY&units=metric';
 
       _getCity(position.latitude, position.longitude);
     } catch (e) {
@@ -44,7 +61,7 @@ class WeatherLocation {
 
   Future<void> fetchData() async {
     http.Response response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       String jsonData = response.body;
       dynamic myjson = jsonDecode(jsonData);
       weather = WeatherModel.fromJson(myjson);
@@ -70,5 +87,5 @@ class WeatherLocation {
       return false;
     }
     return true;
-  }
+  }*/
 }
